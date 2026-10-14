@@ -51,12 +51,10 @@ def execute_move(move: str) -> str:
         chess_move = chess.Move.from_uci(move)
         if chess_move not in st.session_state.board.legal_moves:
             return f"Invalid move: {move}. Please call available_moves() to see valid moves."
-        
-        # Update board state
+     
         st.session_state.board.push(chess_move)
         st.session_state.made_move = True
 
-        # Generate and store board visualization
         board_svg = chess.svg.board(st.session_state.board,
                                   arrows=[(chess_move.from_square, chess_move.to_square)],
                                   fill={chess_move.from_square: "gray"},
@@ -64,13 +62,11 @@ def execute_move(move: str) -> str:
         st.session_state.board_svg = board_svg
         st.session_state.move_history.append(board_svg)
 
-        # Get piece information
         moved_piece = st.session_state.board.piece_at(chess_move.to_square)
         piece_unicode = moved_piece.unicode_symbol()
         piece_type_name = chess.piece_name(moved_piece.piece_type)
         piece_name = piece_type_name.capitalize() if piece_unicode.isupper() else piece_type_name
-        
-        # Generate move description
+       
         from_square = chess.SQUARE_NAMES[chess_move.from_square]
         to_square = chess.SQUARE_NAMES[chess_move.to_square]
         move_desc = f"Moved {piece_name} ({piece_unicode}) from {from_square} to {to_square}."
@@ -223,14 +219,13 @@ The game is managed by a **Game Master** that:
             )
             st.markdown(chat_result.summary)
 
-            # Display the move history (boards for each move)
             st.subheader("Move History")
             for i, move_svg in enumerate(st.session_state.move_history):
-                # Determine which agent made the move
+              
                 if i % 2 == 0:
-                    move_by = "Agent White"  # Even-indexed moves are by White
+                    move_by = "Agent White" 
                 else:
-                    move_by = "Agent Black"  # Odd-indexed moves are by Black
+                    move_by = "Agent Black" 
                 
                 st.write(f"Move {i + 1} by {move_by}")
                 st.image(move_svg)
